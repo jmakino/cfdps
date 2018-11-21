@@ -1,3 +1,8 @@
+THIS PROJECT IS NOW TAKEN OVER BY THE OFFICIAL C-LANGUAGE SUPPORT BY
+FDPS (VER 5.0 AND LATER). I KEEP THIS PROJECT JUST AS HISTRICAL
+ARCHIVE. (NOV 20, 2018)
+
+
 This is the working directory of FDPS on pure-C project.
 
 The current code is still more like a proof of concept but this sample

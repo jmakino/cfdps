@@ -26,20 +26,20 @@ CXX=g++
 CC=gcc
 # MPI case
 #FC=mpif90
-CXX=mpic++
+#CXX=mpic++
 # [Option 1] w/o optimization
 #FCFLAGS = -std=f2003 -O0 -Wall
-CXXFLAGS = -Wall -Wextra -ftrapv -fexceptions -g3 $(FDPS_INC)
+CXXFLAGS = -Wall -Wextra -ftrapv -fexceptions -g3 $(FDPS_INC) -pg
 # [Option 2] w/ optimization 
 FCFLAGS = -std=f2003 -O3 -ffast-math -funroll-loops -finline-functions
-CXXFLAGS = -O3 -ffast-math -funroll-loops $(FDPS_INC)
+CXXFLAGS = -O3 -ffast-math -funroll-loops $(FDPS_INC) -pg
 LDFLAGS = -lgfortran 
 # OpenMP options
 #FCFLAGS  += -DPARTICLE_SIMULATOR_THREAD_PARALLEL -fopenmp
-#CXXFLAGS += -DPARTICLE_SIMULATOR_THREAD_PARALLEL -fopenmp
+CXXFLAGS += -DPARTICLE_SIMULATOR_THREAD_PARALLEL -fopenmp
 # MPI options
 #FCFLAGS  += -DPARTICLE_SIMULATOR_MPI_PARALLEL
-CXXFLAGS += -DPARTICLE_SIMULATOR_MPI_PARALLEL
+#CXXFLAGS += -DPARTICLE_SIMULATOR_MPI_PARALLEL
 
 # fdps-autotest-set-vars (DO NOT CHANGE THIS LINE)
 
@@ -62,7 +62,7 @@ SRC_CXX = FDPS_ftn_if.cpp \
 	  FDPS_Manipulators.cpp \
 	  mainf.cpp
 
-OBJ_USER_DEFINED_TYPE	= $(SRC_USER_DEFINED_TYPE:F90=o)
+#OBJ_USER_DEFINED_TYPE	= $(SRC_USER_DEFINED_TYPE:F90=o)
 OBJ_USER		= $(SRC_USER:F90=o)
 OBJ_FDPS_MOD		= $(notdir $(SRC_FDPS_MOD:F90=o))
 OBJ_FTN			= $(notdir $(SRC_FTN:F90=o))
@@ -70,10 +70,10 @@ OBJ_CXX			= $(SRC_CXX:cpp=o)
 OBJ			= $(OBJ_FTN) $(OBJ_CXX)
 
 VPATH = $(FDPS_FTN_MOD_DIR)
-TARGET = nbody.out
+TARGET = fdpsc
 
-$(TARGET): $(OBJ) result
-	$(CXX) $(OBJ) $(CXXFLAGS) -o $(TARGET) $(LDFLAGS)
+#$(TARGET): $(OBJ) result
+#	$(CXX) $(OBJ) $(CXXFLAGS) -o $(TARGET) $(LDFLAGS)
 
 result:
 	mkdir result
@@ -89,7 +89,7 @@ $(OBJ_USER_DEFINED_TYPE): $(OBJ_FDPS_MOD)
 
 FDPS_module.o: $(OBJ_USER_DEFINED_TYPE)
 
-$(OBJ_USER): $(OBJ_USER_DEFINED_TYPE) FDPS_module.o
+#$(OBJ_USER): $(OBJ_USER_DEFINED_TYPE) FDPS_module.o
 
 clean:
 	rm -f *.o *.s *.mod $(TARGET) *.dat
@@ -111,9 +111,8 @@ main.o: main.c user_defined.c user_defined.h FDPS_vector.h FDPS_c_if.h FDPS_type
 	$(CC) $(CXXFLAGS) -c main.c
 cmain.o : cmain.cpp
 COBJS =   FDPS_ftn_if.o FDPS_Manipulators.o main.o  cmain.o user_defined.o
-CLIBS =
-fdpsc:  $(COBJS) $(CLIBS) Makefile
-	$(CXX) $(COBJS)  -O3 -ffast-math -funroll-loops -I../fdps/fdps//src  -o fdpsc -L. 
+fdpsc:  $(COBJS)  Makefile
+	$(CXX)  $(COBJS) $(CXXFLAGS)   -o fdpsc 
 
 exports : $(EXPORTSRCS)
 	cp -p $(EXPORTSRCS) $(EXPORTDIR)
